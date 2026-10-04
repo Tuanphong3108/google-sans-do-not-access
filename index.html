@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="vi" class="h-full w-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Font Showcase & Embed Generator</title>
+  <title>Typography Library & Embed Generator</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +19,7 @@
     import 'https://esm.run/@material/web/all.js';
   </script>
 
+  <!-- Tailwind Configuration -->
   <script>
     tailwind.config = {
       theme: {
@@ -35,7 +36,7 @@
               'primary-container': '#d3e3fd',
               'on-primary-container': '#041e49',
               secondary: '#444746',
-              outline: '#747775',
+              outline: '#c4c7c5',
             }
           }
         }
@@ -50,12 +51,14 @@
       transition: font-variation-settings 0.25s ease-in-out, color 0.2s ease;
     }
     
-    .interactive-card:hover .material-symbols-outlined,
-    button:hover .material-symbols-outlined {
+    .group:hover .material-symbols-outlined,
+    button:hover .material-symbols-outlined,
+    md-filled-button:hover .material-symbols-outlined,
+    md-outlined-button:hover .material-symbols-outlined {
       font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
     }
 
-    /* Custom Scrollbar */
+    /* Custom Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -73,142 +76,104 @@
   </style>
 </head>
 
-<body class="bg-[#f8f9ff] text-[#1f1f1f] font-sans h-full flex flex-col overflow-hidden antialiased">
-  <!-- Top App Bar -->
-  <header class="bg-[#f0f4f9] border-b border-[#e1e3e1] px-4 md:px-8 py-3 flex-none sticky top-0 z-10 shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
-          <span class="material-symbols-outlined text-2xl">font_download</span>
+<body class="bg-[#f8f9ff] text-[#1f1f1f] font-sans h-screen w-screen flex flex-col overflow-hidden antialiased">
+  
+  <!-- Header Bar -->
+  <header class="bg-[#f0f4f9] border-b border-[#e1e3e1] px-6 py-3 flex-none sticky top-0 z-20 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#0b57d0] text-white flex items-center justify-center shadow-md">
+            <span class="material-symbols-outlined text-2xl">font_download</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold tracking-tight text-[#1f1f1f]">Typography Showcase</h1>
+            <p class="text-xs text-[#5e5e5e] font-medium">Font CDN & Interactive Embed Generator</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-[#1f1f1f]">Typography Library</h1>
-          <p class="text-xs text-[#5e5e5e] font-medium hidden sm:block">CDN Font Distribution & Live Playground</p>
+        
+        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-[#c4c7c5] text-xs font-semibold text-[#444746] shadow-sm sm:hidden">
+          <span class="material-symbols-outlined text-sm text-[#0b57d0]">font_download</span>
+          <span id="fontCountMobile">20 Fonts</span>
         </div>
       </div>
 
-      <!-- Quick Metrics -->
-      <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-[#c4c7c5] shadow-sm text-xs font-semibold text-[#444746]">
-        <span class="material-symbols-outlined text-sm text-blue-600">folder_zip</span>
-        <span id="fontCountBadge">20 Fonts</span>
+      <!-- Controls & Search -->
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-80">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5e5e5e] pointer-events-none text-xl">search</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Tìm phông chữ (VD: Bold, Code, Minecraft)..." 
+            class="w-full pl-11 pr-10 py-2.5 bg-white border border-[#c4c7c5] focus:border-[#0b57d0] rounded-2xl outline-none text-sm font-medium transition-all shadow-sm focus:ring-2 focus:ring-[#0b57d0]/20"
+          >
+          <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-[#5e5e5e] hover:text-[#1f1f1f] p-1 rounded-full">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-[#c4c7c5] text-xs font-semibold text-[#444746] shadow-sm whitespace-nowrap">
+          <span class="material-symbols-outlined text-base text-[#0b57d0]">font_download</span>
+          <span id="fontCount">20 Fonts</span>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6 overflow-hidden">
-    <!-- Left Column: Search & Font List -->
-    <section class="w-full md:w-5/12 lg:w-4/12 flex flex-col h-full bg-white rounded-3xl border border-[#e1e3e1] shadow-sm overflow-hidden flex-none md:flex-1">
-      <!-- Search Box Header -->
-      <div class="p-4 border-b border-[#f0f4f9] bg-white sticky top-0 z-10">
-        <div class="relative flex items-center">
-          <span class="material-symbols-outlined absolute left-3.5 text-[#5e5e5e] pointer-events-none">search</span>
-          <input 
-            type="text" 
-            id="searchInput"
-            placeholder="Tìm kiếm phông chữ..." 
-            class="w-full pl-11 pr-10 py-3 bg-[#f0f4f9] hover:bg-[#e8edf5] focus:bg-white border border-transparent focus:border-blue-600 rounded-2xl outline-none text-sm font-medium transition-all text-[#1f1f1f]"
-          >
-          <button id="clearSearchBtn" class="hidden absolute right-3 text-[#5e5e5e] hover:text-[#1f1f1f] p-1 rounded-full">
-            <span class="material-symbols-outlined text-lg">close</span>
-          </button>
+  <!-- Main Grid Area -->
+  <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+      
+      <!-- Live Preview Master Controls -->
+      <div class="bg-white p-4 rounded-3xl border border-[#e1e3e1] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <span class="material-symbols-outlined text-[#0b57d0] text-2xl">edit_note</span>
+          <div class="flex-1">
+            <label for="globalPreviewInput" class="block text-xs font-bold uppercase tracking-wider text-[#5e5e5e]">Văn bản xem trước chung</label>
+            <input 
+              type="text" 
+              id="globalPreviewInput" 
+              value="The quick brown fox jumps over the lazy dog. 0123456789" 
+              class="w-full text-sm font-medium border-b border-transparent hover:border-[#c4c7c5] focus:border-[#0b57d0] outline-none py-0.5 transition-colors bg-transparent"
+              placeholder="Nhập câu dùng làm mẫu thử..."
+            >
+          </div>
+        </div>
+
+        <!-- Size Slider -->
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-[#f0f4f9]">
+          <span class="text-xs font-bold text-[#5e5e5e] whitespace-nowrap">Cỡ chữ: <strong id="fontSizeValue" class="text-[#1f1f1f]">28px</strong></span>
+          <input type="range" id="fontSizeSlider" min="14" max="64" value="28" class="w-32 accent-[#0b57d0] cursor-pointer">
         </div>
       </div>
 
-      <!-- Font List Scroll Area -->
-      <div id="fontList" class="flex-1 overflow-y-auto p-3 space-y-2">
-        <!-- Font Item Cards injected dynamically -->
-      </div>
-    </section>
-
-    <!-- Right Column: Interactive Details & Live Preview -->
-    <section class="w-full md:w-7/12 lg:w-8/12 flex flex-col h-full bg-white rounded-3xl border border-[#e1e3e1] shadow-sm overflow-hidden">
-      <!-- Active Font Header & Tabs -->
-      <div class="p-5 border-b border-[#e1e3e1] bg-[#f8f9ff] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-blue-600">match_case</span>
-            <h2 id="activeFontTitle" class="text-xl font-bold text-[#1f1f1f] tracking-tight">Select a Font</h2>
-          </div>
-          <p id="activeFontFilename" class="text-xs text-[#5e5e5e] font-mono bg-white px-2.5 py-0.5 rounded-md border border-[#e1e3e1] inline-block">--.ttf</p>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex items-center gap-3">
-          <md-outlined-button id="copyDirectLinkBtn">
-            <span class="material-symbols-outlined slot="icon">link</span>
-            Copy CDN Link
-          </md-outlined-button>
-        </div>
+      <!-- Font Cards Grid -->
+      <div id="fontGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Font cards injected via JS -->
       </div>
 
-      <!-- Preview & Code Workspace (Scrollable) -->
-      <div class="flex-1 overflow-y-auto p-5 space-y-6">
-        
-        <!-- Live Preview Editor -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-bold uppercase tracking-wider text-[#5e5e5e] flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm">visibility</span>
-              Thử nghiệm phông chữ (Live Preview)
-            </label>
-            <div class="flex items-center gap-3 text-xs font-medium text-[#5e5e5e]">
-              <span>Kích thước: <strong id="fontSizeLabel" class="text-[#1f1f1f]">32px</strong></span>
-              <input type="range" id="fontSizeSlider" min="14" max="72" value="32" class="w-24 accent-blue-600 cursor-pointer">
-            </div>
-          </div>
-
-          <div class="p-4 bg-[#f8f9ff] rounded-2xl border border-[#e1e3e1] min-h-[160px] flex items-center justify-center transition-all">
-            <textarea 
-              id="previewTextArea" 
-              rows="3" 
-              class="w-full bg-transparent border-none outline-none resize-none text-center text-[#1f1f1f] leading-normal" 
-              placeholder="Nhập nội dung bất kỳ để trải nghiệm phông chữ..."
-            >The quick brown fox jumps over the lazy dog. 0123456789</textarea>
-          </div>
+      <!-- Empty Search State -->
+      <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center space-y-3">
+        <div class="w-16 h-16 rounded-full bg-[#f0f4f9] flex items-center justify-center text-[#5e5e5e]">
+          <span class="material-symbols-outlined text-3xl">search_off</span>
         </div>
-
-        <!-- Integration Snippets -->
-        <div class="space-y-4">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[#5e5e5e] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-sm">code</span>
-            Mã nhúng CSS (@font-face)
-          </h3>
-
-          <!-- Snippet Card 1: CSS @font-face -->
-          <div class="bg-[#1e1e1e] text-gray-200 rounded-2xl p-4 relative group font-mono text-xs overflow-hidden shadow-inner">
-            <div class="flex justify-between items-center pb-2 mb-2 border-b border-gray-700 text-gray-400 font-sans">
-              <span>CSS Rule</span>
-              <button onclick="copySnippet('cssSnippet')" class="hover:text-white flex items-center gap-1 text-xs transition">
-                <span class="material-symbols-outlined text-sm">content_copy</span>
-                Sao chép
-              </button>
-            </div>
-            <pre id="cssSnippet" class="overflow-x-auto whitespace-pre-wrap text-blue-300"></pre>
-          </div>
-
-          <!-- Snippet Card 2: HTML Link / Import -->
-          <div class="bg-[#1e1e1e] text-gray-200 rounded-2xl p-4 relative group font-mono text-xs overflow-hidden shadow-inner">
-            <div class="flex justify-between items-center pb-2 mb-2 border-b border-gray-700 text-gray-400 font-sans">
-              <span>Direct URL</span>
-              <button onclick="copySnippet('urlSnippet')" class="hover:text-white flex items-center gap-1 text-xs transition">
-                <span class="material-symbols-outlined text-sm">content_copy</span>
-                Sao chép
-              </button>
-            </div>
-            <pre id="urlSnippet" class="overflow-x-auto whitespace-pre-wrap text-emerald-400"></pre>
-          </div>
-        </div>
+        <h3 class="text-lg font-bold text-[#1f1f1f]">Không tìm thấy phông chữ phù hợp</h3>
+        <p class="text-sm text-[#5e5e5e]">Hãy thử từ khóa khác như "Bold", "Italic", hoặc "Minecraft".</p>
       </div>
-    </section>
+
+    </div>
   </main>
 
-  <!-- Notification Snackbar -->
-  <md-snackbar id="snackbar" message="Đã sao chép vào bộ nhớ tạm!"></md-snackbar>
+  <!-- Toast / Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-[#1f1f1f] text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50 pointer-events-none">
+    <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
+    <span id="toastMessage" class="text-sm font-medium">Đã sao chép đường dẫn!</span>
+  </div>
 
   <script>
-    // List of extracted TTF font files
-    const fontFiles = [
+    // List of font TTF files from repository
+    const fontList = [
       "GoogleSans-Bold.ttf",
       "GoogleSans-BoldItalic.ttf",
       "GoogleSans-Italic.ttf",
@@ -231,4 +196,226 @@
       "minecraft.ttf"
     ];
 
-    const baseUrl = "https://tuanphong3108.github.io/
+    const cdnBaseUrl = "https://tuanphong3108.github.io/google-sans-do-not-access/";
+
+    // Generate unique Font Family Name for CSS
+    function getFontFamilyName(filename) {
+      return 'Font_' + filename.replace(/[^a-zA-Z0-9]/g, '_');
+    }
+
+    // Format readable title
+    function formatFontTitle(filename) {
+      return filename.replace(/\.ttf$/i, '');
+    }
+
+    // Inject @font-face definitions dynamically into document head
+    function loadFontFaces() {
+      const styleTag = document.createElement('style');
+      let cssRules = '';
+
+      fontList.forEach(file => {
+        const fontFamily = getFontFamilyName(file);
+        const fontUrl = cdnBaseUrl + file;
+        cssRules += `
+          @font-face {
+            font-family: '${fontFamily}';
+            src: url('${fontUrl}') format('truetype');
+            font-display: swap;
+          }
+        `;
+      });
+
+      styleTag.textContent = cssRules;
+      document.head.appendChild(styleTag);
+    }
+
+    // Render Font Cards
+    function renderFontCards() {
+      const grid = document.getElementById('fontGrid');
+      grid.innerHTML = '';
+
+      fontList.forEach((file, index) => {
+        const fontFamily = getFontFamilyName(file);
+        const fontTitle = formatFontTitle(file);
+        const directUrl = cdnBaseUrl + file;
+        const fontFaceCss = `@font-face {\n  font-family: '${fontTitle}';\n  src: url('${directUrl}') format('truetype');\n}`;
+
+        const card = document.createElement('div');
+        card.className = "font-card bg-white rounded-3xl border border-[#e1e3e1] p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group";
+        card.setAttribute('data-[#1f1f1f]', fontTitle.toLowerCase());
+
+        card.innerHTML = `
+          <!-- Card Header -->
+          <div class="flex items-start justify-between gap-3 pb-3 border-b border-[#f0f4f9]">
+            <div>
+              <h2 class="text-lg font-bold text-[#1f1f1f] group-hover:text-[#0b57d0] transition-colors">${fontTitle}</h2>
+              <span class="text-xs font-mono text-[#5e5e5e]">${file}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button 
+                onclick="copyToClipboard('${directUrl}', 'Đã sao chép URL trực tiếp!')"
+                title="Sao chép URL trực tiếp"
+                class="p-2 rounded-full hover:bg-[#f0f4f9] text-[#444746] hover:text-[#0b57d0] transition-colors"
+              >
+                <span class="material-symbols-outlined text-xl">link</span>
+              </button>
+              <button 
+                onclick="copyToClipboard(\`${fontFaceCss}\`, 'Đã sao chép mã @font-face CSS!')"
+                title="Sao chép mã CSS @font-face"
+                class="p-2 rounded-full hover:bg-[#f0f4f9] text-[#444746] hover:text-[#0b57d0] transition-colors"
+              >
+                <span class="material-symbols-outlined text-xl">code</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Preview Area -->
+          <div class="py-2 flex-1 flex items-center min-h-[90px]">
+            <p 
+              class="preview-text w-full outline-none text-[#1f1f1f] break-words transition-all"
+              contenteditable="true"
+              style="font-family: '${fontFamily}', sans-serif; font-size: 28px;"
+            >The quick brown fox jumps over the lazy dog. 0123456789</p>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="pt-3 border-t border-[#f0f4f9] flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[#747775] bg-[#f8f9ff] px-2.5 py-1 rounded-md border border-[#e1e3e1]">TTF Font</span>
+            <div class="flex items-center gap-2">
+              <md-outlined-button onclick="copyToClipboard('${directUrl}', 'Đã sao chép URL trực tiếp!')">
+                <span class="material-symbols-outlined" slot="icon">link</span>
+                Copy Link
+              </md-outlined-button>
+              <md-filled-button onclick="copyToClipboard(\`${fontFaceCss}\`, 'Đã sao chép mã CSS!')">
+                <span class="material-symbols-outlined" slot="icon">content_copy</span>
+                CSS
+              </md-filled-button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      updateCountBadge(fontList.length);
+    }
+
+    // Copy to clipboard with Toast Notification
+    function copyToClipboard(text, successMessage) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast(successMessage));
+      } else {
+        // Fallback for non-secure context or frame restrictions
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast(successMessage);
+        } catch (err) {
+          showToast("Không thể sao chép tự động!");
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    // Show Toast
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.textContent = msg;
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Update Font Counter
+    function updateCountBadge(count) {
+      const text = `${count} Phông chữ`;
+      document.getElementById('fontCount').textContent = text;
+      document.getElementById('fontCountMobile').textContent = text;
+    }
+
+    // Global Interactive Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFontFaces();
+      renderFontCards();
+
+      // Search functionality
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const emptyState = document.getElementById('emptyState');
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.font-card');
+        let visibleCount = 0;
+
+        if (query.length > 0) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+        }
+
+        cards.forEach(card => {
+          const title = card.getAttribute('data-[#1f1f1f]');
+          if (title.includes(query)) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        updateCountBadge(visibleCount);
+
+        if (visibleCount === 0) {
+          emptyState.classList.remove('hidden');
+          emptyState.classList.add('flex');
+        } else {
+          emptyState.classList.add('hidden');
+          emptyState.classList.remove('flex');
+        }
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.focus();
+      });
+
+      // Synchronize Global Preview Text
+      const globalPreviewInput = document.getElementById('globalPreviewInput');
+      globalPreviewInput.addEventListener('input', (e) => {
+        const newText = e.target.value || "The quick brown fox jumps over the lazy dog. 0123456789";
+        document.querySelectorAll('.preview-text').forEach(el => {
+          el.textContent = newText;
+        });
+      });
+
+      // Synchronize Font Size Slider
+      const fontSizeSlider = document.getElementById('fontSizeSlider');
+      const fontSizeValue = document.getElementById('fontSizeValue');
+
+      fontSizeSlider.addEventListener('input', (e) => {
+        const size = e.target.value + 'px';
+        fontSizeValue.textContent = size;
+        document.querySelectorAll('.preview-text').forEach(el => {
+          el.style.fontSize = size;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
