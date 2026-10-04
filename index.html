@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Showcase & Embed Generator</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Sans Flex & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <!-- Material Web Components (M3) -->
+  <script type="module">
+    import 'https://esm.run/@material/web/all.js';
+  </script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Google Sans Flex', 'sans-serif'],
+          },
+          colors: {
+            md: {
+              surface: '#f8f9ff',
+              'surface-container': '#f0f4f9',
+              'surface-container-high': '#e8edf5',
+              primary: '#0b57d0',
+              'primary-container': '#d3e3fd',
+              'on-primary-container': '#041e49',
+              secondary: '#444746',
+              outline: '#747775',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Material Symbols hover transition to FILL */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      transition: font-variation-settings 0.25s ease-in-out, color 0.2s ease;
+    }
+    
+    .interactive-card:hover .material-symbols-outlined,
+    button:hover .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c4c7c5;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8e918f;
+    }
+  </style>
+</head>
+
+<body class="bg-[#f8f9ff] text-[#1f1f1f] font-sans h-full flex flex-col overflow-hidden antialiased">
+  <!-- Top App Bar -->
+  <header class="bg-[#f0f4f9] border-b border-[#e1e3e1] px-4 md:px-8 py-3 flex-none sticky top-0 z-10 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
+          <span class="material-symbols-outlined text-2xl">font_download</span>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-[#1f1f1f]">Typography Library</h1>
+          <p class="text-xs text-[#5e5e5e] font-medium hidden sm:block">CDN Font Distribution & Live Playground</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-[#c4c7c5] shadow-sm text-xs font-semibold text-[#444746]">
+        <span class="material-symbols-outlined text-sm text-blue-600">folder_zip</span>
+        <span id="fontCountBadge">20 Fonts</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6 overflow-hidden">
+    <!-- Left Column: Search & Font List -->
+    <section class="w-full md:w-5/12 lg:w-4/12 flex flex-col h-full bg-white rounded-3xl border border-[#e1e3e1] shadow-sm overflow-hidden flex-none md:flex-1">
+      <!-- Search Box Header -->
+      <div class="p-4 border-b border-[#f0f4f9] bg-white sticky top-0 z-10">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3.5 text-[#5e5e5e] pointer-events-none">search</span>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Tìm kiếm phông chữ..." 
+            class="w-full pl-11 pr-10 py-3 bg-[#f0f4f9] hover:bg-[#e8edf5] focus:bg-white border border-transparent focus:border-blue-600 rounded-2xl outline-none text-sm font-medium transition-all text-[#1f1f1f]"
+          >
+          <button id="clearSearchBtn" class="hidden absolute right-3 text-[#5e5e5e] hover:text-[#1f1f1f] p-1 rounded-full">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Font List Scroll Area -->
+      <div id="fontList" class="flex-1 overflow-y-auto p-3 space-y-2">
+        <!-- Font Item Cards injected dynamically -->
+      </div>
+    </section>
+
+    <!-- Right Column: Interactive Details & Live Preview -->
+    <section class="w-full md:w-7/12 lg:w-8/12 flex flex-col h-full bg-white rounded-3xl border border-[#e1e3e1] shadow-sm overflow-hidden">
+      <!-- Active Font Header & Tabs -->
+      <div class="p-5 border-b border-[#e1e3e1] bg-[#f8f9ff] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600">match_case</span>
+            <h2 id="activeFontTitle" class="text-xl font-bold text-[#1f1f1f] tracking-tight">Select a Font</h2>
+          </div>
+          <p id="activeFontFilename" class="text-xs text-[#5e5e5e] font-mono bg-white px-2.5 py-0.5 rounded-md border border-[#e1e3e1] inline-block">--.ttf</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-3">
+          <md-outlined-button id="copyDirectLinkBtn">
+            <span class="material-symbols-outlined slot="icon">link</span>
+            Copy CDN Link
+          </md-outlined-button>
+        </div>
+      </div>
+
+      <!-- Preview & Code Workspace (Scrollable) -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-6">
+        
+        <!-- Live Preview Editor -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold uppercase tracking-wider text-[#5e5e5e] flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">visibility</span>
+              Thử nghiệm phông chữ (Live Preview)
+            </label>
+            <div class="flex items-center gap-3 text-xs font-medium text-[#5e5e5e]">
+              <span>Kích thước: <strong id="fontSizeLabel" class="text-[#1f1f1f]">32px</strong></span>
+              <input type="range" id="fontSizeSlider" min="14" max="72" value="32" class="w-24 accent-blue-600 cursor-pointer">
+            </div>
+          </div>
+
+          <div class="p-4 bg-[#f8f9ff] rounded-2xl border border-[#e1e3e1] min-h-[160px] flex items-center justify-center transition-all">
+            <textarea 
+              id="previewTextArea" 
+              rows="3" 
+              class="w-full bg-transparent border-none outline-none resize-none text-center text-[#1f1f1f] leading-normal" 
+              placeholder="Nhập nội dung bất kỳ để trải nghiệm phông chữ..."
+            >The quick brown fox jumps over the lazy dog. 0123456789</textarea>
+          </div>
+        </div>
+
+        <!-- Integration Snippets -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[#5e5e5e] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">code</span>
+            Mã nhúng CSS (@font-face)
+          </h3>
+
+          <!-- Snippet Card 1: CSS @font-face -->
+          <div class="bg-[#1e1e1e] text-gray-200 rounded-2xl p-4 relative group font-mono text-xs overflow-hidden shadow-inner">
+            <div class="flex justify-between items-center pb-2 mb-2 border-b border-gray-700 text-gray-400 font-sans">
+              <span>CSS Rule</span>
+              <button onclick="copySnippet('cssSnippet')" class="hover:text-white flex items-center gap-1 text-xs transition">
+                <span class="material-symbols-outlined text-sm">content_copy</span>
+                Sao chép
+              </button>
+            </div>
+            <pre id="cssSnippet" class="overflow-x-auto whitespace-pre-wrap text-blue-300"></pre>
+          </div>
+
+          <!-- Snippet Card 2: HTML Link / Import -->
+          <div class="bg-[#1e1e1e] text-gray-200 rounded-2xl p-4 relative group font-mono text-xs overflow-hidden shadow-inner">
+            <div class="flex justify-between items-center pb-2 mb-2 border-b border-gray-700 text-gray-400 font-sans">
+              <span>Direct URL</span>
+              <button onclick="copySnippet('urlSnippet')" class="hover:text-white flex items-center gap-1 text-xs transition">
+                <span class="material-symbols-outlined text-sm">content_copy</span>
+                Sao chép
+              </button>
+            </div>
+            <pre id="urlSnippet" class="overflow-x-auto whitespace-pre-wrap text-emerald-400"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Snackbar -->
+  <md-snackbar id="snackbar" message="Đã sao chép vào bộ nhớ tạm!"></md-snackbar>
+
+  <script>
+    // List of extracted TTF font files
+    const fontFiles = [
+      "GoogleSans-Bold.ttf",
+      "GoogleSans-BoldItalic.ttf",
+      "GoogleSans-Italic.ttf",
+      "GoogleSans-Medium.ttf",
+      "GoogleSans-MediumItalic.ttf",
+      "GoogleSans-Regular.ttf",
+      "GoogleSansCode-Bold.ttf",
+      "GoogleSansCode-BoldItalic.ttf",
+      "GoogleSansCode-ExtraBold.ttf",
+      "GoogleSansCode-ExtraBoldItalic.ttf",
+      "GoogleSansCode-Italic.ttf",
+      "GoogleSansCode-Light.ttf",
+      "GoogleSansCode-LightItalic.ttf",
+      "GoogleSansCode-Medium.ttf",
+      "GoogleSansCode-MediumItalic.ttf",
+      "GoogleSansCode-Regular.ttf",
+      "GoogleSansCode-SemiBold.ttf",
+      "GoogleSansCode-SemiBoldItalic.ttf",
+      "MinecraftTen-VGORe.ttf",
+      "minecraft.ttf"
+    ];
+
+    const baseUrl = "https://tuanphong3108.github.io/
